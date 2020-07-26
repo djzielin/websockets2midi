@@ -3,6 +3,7 @@ const WebSocket = require('ws');
 const readline = require('readline');
 const midi = require('midi');
 const midiOutput = new midi.Output();
+const midiInput = new midi.Input();
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -13,27 +14,23 @@ console.clear();
 let weAreConnected=false;
 let ws = null;
 
-console.log("midi output ports available: ");
+console.log("midi output (receive) ports available: ");
 for (let i = 0; i < midiOutput.getPortCount(); i++) {
 	console.log("["+ i + "] " + midiOutput.getPortName(i));
 }
 
 rl.question('What port would you like to use? ', (answer) => {
 	midiOutput.openPort(parseInt(answer));
-	weAreConnected=true;
-	
+	weAreConnected = true;
+
 	setInterval(() => {
-	if (ws === null) {
-		console.log("------------------------------------------------------------");
-		console.log("1 seconds has expired. trying to connect to server... ");
-		connectToServer();
-	}
-}, 1000);
+		if (ws === null) {
+			console.log("------------------------------------------------------------");
+			console.log("1 seconds has expired. trying to connect to server... ");
+			connectToServer();
+		}
+	});
 });
-
-
-
-
 
 process.on("SIGINT", () => {
 	console.log("received SIGINT (control-c)");
